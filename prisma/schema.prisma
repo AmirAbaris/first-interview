@@ -13,7 +13,7 @@ model News {
   title     String
   content   String
   imageUrl  String
-  type      String // e.g., "NEWS" or other categories
+  type      String
   slug      String   @unique
   author    User     @relation("AuthorNews", fields: [authorId], references: [id])
   authorId  String
@@ -25,6 +25,6 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
