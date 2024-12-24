@@ -1,0 +1,30 @@
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER") // "USER" or "REPORTER"
+  news      News[]   @relation("AuthorNews")
+  createdAt DateTime @default(now())
+}
+
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  imageUrl  String
+  type      String // e.g., "NEWS" or other categories
+  slug      String   @unique
+  author    User     @relation("AuthorNews", fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
