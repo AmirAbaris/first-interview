@@ -6,7 +6,7 @@ import { useState } from "react";
 import createUser from "./action";
 import { z } from "zod";
 import { userSchema } from "@/lib/user";
-// import SignUpForm from "@/components/forms/SignUpForm";
+import SignUpForm from "@/components/forms/SignUpForm";
 
 import {
   Dialog,
@@ -17,12 +17,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
-const SignUpForm = dynamic(() => import("@/components/forms/SignUpForm"), {
-  ssr: false,
-  loading: () => <Loader2 className="w-10 h-10 animate-spin mx-auto min-h-64" />,
-});
 
 export default function SignUpPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
