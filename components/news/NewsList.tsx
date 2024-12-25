@@ -20,7 +20,10 @@ export function NewsList() {
     isError,
   } = useQuery<NewsItem[]>({
     queryKey: ["news"],
-    queryFn: () => getNews(),
+    queryFn: async () => {
+      const result = await getNews();
+      return Array.isArray(result) ? result : [];
+    },
   });
 
   const { mutate: deleteNewsItem } = useMutation<void, Error, string>({
@@ -42,31 +45,35 @@ export function NewsList() {
 
   return (
     <div className="space-y-4">
-      {news?.map((item) => (
-        <Card key={item.id}>
-          <CardHeader>
-            <CardTitle>{item.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{item.content}</p>
-            <div className="mt-4 flex space-x-2">
-              {isReporter() && (
-                <Button
-                  variant="outline"
-                  onClick={() => deleteNewsItem(item.id)}
-                  disabled={deletingId === item.id}
-                >
-                  {deletingId === item.id ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    "Delete"
-                  )}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      {Array.isArray(news) && news.length > 0 ? (
+        news.map((item) => (
+          <Card key={item.id}>
+            <CardHeader>
+              <CardTitle>{item.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{item.content}</p>
+              <div className="mt-4 flex space-x-2">
+                {isReporter() && (
+                  <Button
+                    variant="outline"
+                    onClick={() => deleteNewsItem(item.id)}
+                    disabled={deletingId === item.id}
+                  >
+                    {deletingId === item.id ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      "Delete"
+                    )}
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <div>No news available.</div>
+      )}
     </div>
   );
 }
