@@ -1,38 +1,46 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
+import { useState, useEffect, useCallback } from "react";
 import { NewsCard } from "./NewsCard";
 import { Button } from "../ui/button";
 import { getNews } from "@/app/news-action/action";
 import { Skeleton } from "../ui/skeleton";
+import { NewsItem } from "@/lib/news-item";
 
 export function NewsGrid() {
-  const { ref, inView } = useInView();
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery({
-    queryKey: ["news"],
-    queryFn: ({ pageParam = 1 }) => getNews(pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage) return undefined;
-      return lastPage.length === 10 ? allPages.length + 1 : undefined;
-    },
-    initialPageParam: 1,
-  });
+  // Fetch news data
+  const fetchNews = useCallback(async () => {
+    setIsFetchingNextPage(true);
+    try {
+      const newData = await getNews(page);
+      setNews((prevNews) => [...prevNews, ...newData]);
+      setHasNextPage(newData.length === 10);
+      setIsLoading(false);
+      setIsFetchingNextPage(false);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setIsError(true);
+      setIsLoading(false);
+      setIsFetchingNextPage(false);
+    }
+  }, [page]);
 
   useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
+    fetchNews();
+  }, [page, fetchNews]);
+
+  const loadMore = () => {
+    if (hasNextPage) {
+      setPage((prevPage) => prevPage + 1);
     }
-  }, [inView, fetchNextPage, hasNextPage]);
+  };
 
   if (isLoading) {
     return (
@@ -51,15 +59,15 @@ export function NewsGrid() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data?.pages.map((page) =>
-          page.map((item) => <NewsCard key={item.id} news={item} />)
-        )}
+        {news.map((item, index) => (
+          <NewsCard key={`${item.id}-${index}`} news={item} />
+        ))}
       </div>
-      <div ref={ref} className="flex justify-center p-4">
+      <div className="flex justify-center p-4">
         {isFetchingNextPage ? (
           <Skeleton className="h-10 w-32" />
         ) : hasNextPage ? (
-          <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+          <Button onClick={loadMore} disabled={isFetchingNextPage}>
             Load More
           </Button>
         ) : null}

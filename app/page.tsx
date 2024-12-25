@@ -12,11 +12,7 @@ export default function Home() {
         >
           <Hero />
         </Suspense>
-        <Suspense
-          fallback={<Skeleton className="h-[600px] w-full rounded-lg" />}
-        >
-          <NewsGrid />
-        </Suspense>
+        <NewsGrid />
       </div>
     </div>
   );
