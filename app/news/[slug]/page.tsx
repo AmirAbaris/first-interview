@@ -6,9 +6,10 @@ import { getNewsBySlug } from "../../news-action/action";
 export default async function NewsArticlePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const news = await getNewsBySlug(params.slug);
+  const { slug } = await params;
+  const news = await getNewsBySlug(slug);
 
   if (!news) {
     notFound();
