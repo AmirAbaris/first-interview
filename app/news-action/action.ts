@@ -100,3 +100,21 @@ export async function getNews(
   const end = start + pageSize;
   return news.slice(start, end);
 }
+
+export async function editNews(
+  id: string,
+  updatedItem: { title: string; content: string }
+): Promise<void> {
+  const newsItem = news.find((item) => item.id === id);
+
+  if (newsItem) {
+    newsItem.title = updatedItem.title;
+    newsItem.content = updatedItem.content;
+
+    newsItem.slug = updatedItem.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    revalidatePath("/news");
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+}
