@@ -14,9 +14,10 @@ export default function LoginPage() {
   const mutation = useMutation({
     mutationKey: ["login"],
     mutationFn: (values: { email: string; password: string }) => login(values),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setSuccess(true);
       setError(null);
+      localStorage.setItem("user", JSON.stringify(data));
       router.push("/");
     },
     onError: (err: Error) => {

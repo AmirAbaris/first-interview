@@ -25,9 +25,10 @@ export default function SignUpPage() {
   const mutation = useMutation({
     mutationKey: ["signUp"],
     mutationFn: (data: z.infer<typeof userSchema>) => createUser(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setDialogMessage("Account created successfully!");
       setDialogOpen(true);
+      localStorage.setItem("user", JSON.stringify(data));
     },
     onError: () => {
       setDialogMessage("An error occurred. Please try again.");
