@@ -9,8 +9,9 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
 
 export default function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -35,7 +36,7 @@ export default function Hero() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[460px] w-full">
-        <Loader2 className="w-12 h-12 animate-spin" />
+        <Skeleton className="h-[460px] w-full rounded-lg" />
       </div>
     );
   }

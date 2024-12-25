@@ -91,3 +91,12 @@ export async function getNewsBySlug(slug: string): Promise<NewsItem | null> {
 export async function getLatestNews(limit: number = 5): Promise<NewsItem[]> {
   return news.slice(0, limit);
 }
+
+export async function getNews(
+  page: number = 1,
+  pageSize: number = 10
+): Promise<NewsItem[]> {
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  return news.slice(start, end);
+}
