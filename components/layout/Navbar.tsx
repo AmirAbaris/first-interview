@@ -49,11 +49,14 @@ export default function Navbar() {
             <Loader2 className="animate-spin h-8 w-8" />
           ) : !user ? (
             <>
+              <Link href="/news">
+                <Button variant="outline">News</Button>
+              </Link>
               <Link href="/log-in">
                 <Button variant="outline">Log In</Button>
               </Link>
               <Link href="/sign-up">
-                <Button variant="outline">Sign Up</Button>
+                <Button>Sign Up</Button>
               </Link>
             </>
           ) : (
@@ -67,8 +70,8 @@ export default function Navbar() {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
+                  <DropdownMenuItem>
+                    <Link href="/news">News</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     Log Out
@@ -102,11 +105,14 @@ export default function Navbar() {
                   <Link href="/sign-up" className="block py-2">
                     Sign Up
                   </Link>
+                  <Link href="/news">
+                    <Button variant="outline">News</Button>
+                  </Link>
                 </>
               ) : (
                 <>
-                  <Link href="/profile" className="block py-2">
-                    Profile
+                  <Link href="/news">
+                    <Button variant="outline">News</Button>
                   </Link>
                   <Button onClick={handleLogout} className="block w-full mt-4">
                     Log Out

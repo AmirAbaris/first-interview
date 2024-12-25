@@ -23,5 +23,10 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000,
   });
 
-  return { user: user || data, isLoading, isError };
+  const isReporter = () => {
+    const currentUser = user || data;
+    return currentUser?.role === "REPORTER";
+  };
+
+  return { user: user || data, isLoading, isError, isReporter };
 }
