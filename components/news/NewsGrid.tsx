@@ -22,6 +22,7 @@ export function NewsGrid() {
     queryKey: ["news"],
     queryFn: ({ pageParam = 1 }) => getNews(pageParam),
     getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage) return undefined;
       return lastPage.length === 10 ? allPages.length + 1 : undefined;
     },
     initialPageParam: 1,
