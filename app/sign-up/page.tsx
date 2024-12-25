@@ -17,17 +17,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function SignUpPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState<string | null>(null);
+  const { setUser } = useAuthContext();
 
   const mutation = useMutation({
     mutationKey: ["signUp"],
     mutationFn: (data: z.infer<typeof userSchema>) => createUser(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setDialogMessage("Account created successfully!");
       setDialogOpen(true);
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
     },
     onError: () => {
       setDialogMessage("An error occurred. Please try again.");
