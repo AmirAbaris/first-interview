@@ -1,29 +1,27 @@
-"use client";
-
-import { checkUserAuth } from "@/components/layout/action";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { checkUserAuth } from "@/components/layout/action";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export function useAuth() {
-  const [storedUser, setStoredUser] = useState<null | { email: string }>(null);
+  const { user, setUser } = useAuthContext();
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    setStoredUser(user ? JSON.parse(user) : null);
-  }, []);
-
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["user"],
-    queryFn: () => {
-      if (!storedUser) return null;
-      return checkUserAuth(storedUser.email);
+    queryFn: async () => {
+      const storedUser = localStorage.getItem("user");
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser) {
+        const fetchedUser = await checkUserAuth(parsedUser.email);
+        setUser(fetchedUser);
+        return fetchedUser;
+      }
+
+      setUser(null);
+      return null;
     },
-    enabled: !!storedUser,
+    staleTime: 5 * 60 * 1000,
   });
 
-  return { user, isLoading, isError };
+  return { user: user || data, isLoading, isError };
 }

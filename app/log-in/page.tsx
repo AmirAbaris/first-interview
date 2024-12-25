@@ -5,11 +5,13 @@ import LoginForm from "@/components/forms/LoginForm";
 import { login } from "./action";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuthContext();
 
   const mutation = useMutation({
     mutationKey: ["login"],
@@ -18,6 +20,7 @@ export default function LoginPage() {
       setSuccess(true);
       setError(null);
       localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
       router.push("/");
     },
     onError: (err: Error) => {
