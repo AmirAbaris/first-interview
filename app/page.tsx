@@ -1,7 +1,11 @@
+import Hero from "@/components/sections/Hero";
+
 export default function Home() {
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <h1 className="text-4xl">Hello News paper</h1>
+    <div className="container mx-auto">
+      <div className="flex flex-col gap-16 my-16 px-12">
+        <Hero />
+      </div>
     </div>
   );
 }
